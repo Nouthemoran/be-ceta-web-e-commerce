@@ -2,12 +2,18 @@ const express = require('express');
 const sequelize = require('./config/db');
 require('dotenv').config();
 
-
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+
 const app = express();
 app.use(express.json());
 
+// main routes
+app.use('/api/cart', cartRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+
 // Cek koneksi DB
 sequelize
   .authenticate()

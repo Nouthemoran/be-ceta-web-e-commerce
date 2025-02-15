@@ -45,4 +45,15 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+// LOGOUT
+const logoutUser = async (req, res) => {
+  try {
+    // Logout biasanya cuma hapus token di frontend, jadi kita balikin respon sukses aja.
+    res.status(200).json({ message: 'Logout sukses, hapus token di client!' });
+  } catch (err) {
+    res.status(500).json({ error: 'Logout gagal', details: err.message });
+  }
+};
+
+
+module.exports = { registerUser, loginUser, logoutUser };
