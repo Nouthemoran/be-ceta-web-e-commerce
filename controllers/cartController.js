@@ -1,6 +1,5 @@
 const Cart = require('../models/Cart');
-const Product = require('../models/Product'); 
-const User = require('../models/User');
+const Product = require('../models/Product');  
 
 const getCartItems = async (req, res) => {
   try {
@@ -18,8 +17,6 @@ const getCartItems = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-  
   
 // 2️⃣ POST Add Item to Cart
 const addCartItem = async (req, res) => {

@@ -1,11 +1,15 @@
 const Product = require('../models/Product');
+const { generateCustomId } = require('../utils/generateCustomId');
 
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
     const { name, price, description, stock, imageUrl } = req.body;
 
+    const customProductId = generateCustomId('PRODUCT'); // PRODUCT-XYZ12345
+
     const newProduct = await Product.create({
+      id: customProductId,
       name,
       price,
       description,
