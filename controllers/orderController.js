@@ -1,11 +1,14 @@
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const { generateOrderId } = require('../utils/generateCustomId');
 
 // 1️⃣ Checkout dari Cart (Semua Barang di Keranjang)
 const checkoutFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
+
+    const customOrderId = generateOrderId();
 
     const cartItems = await Cart.findAll({
       where: { userId },
@@ -40,8 +43,9 @@ const checkoutFromCart = async (req, res) => {
       await product.save();
     }
 
-    // Buat order baru
+    // Buat order baru dengan customOrderId
     const order = await Order.create({
+      id: customOrderId, // <-- Ini masukin customOrderId
       userId,
       totalPrice,
       items: JSON.stringify(orderItems),
@@ -62,6 +66,8 @@ const buyNow = async (req, res) => {
     const userId = req.user.id;
     const { productId, quantity } = req.body;
 
+    const customOrderId = generateOrderId();
+
     const product = await Product.findByPk(productId);
 
     if (!product) {
@@ -75,6 +81,7 @@ const buyNow = async (req, res) => {
     const totalPrice = product.price * quantity;
 
     const order = await Order.create({
+      id: customOrderId, // <-- Ini masukin customOrderId
       userId,
       totalPrice,
       items: JSON.stringify([

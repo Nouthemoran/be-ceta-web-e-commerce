@@ -4,8 +4,13 @@ const Product = require('./Product');
 const User = require('./User'); // Import User
 
 const Cart = sequelize.define('Cart', {
+  id: {
+    type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
+    defaultValue: DataTypes.UUIDV4, // generate UUID otomatis
+    primaryKey:true
+  },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
     allowNull: false,
     references: {
       model: User, // Relasi ke User
@@ -13,7 +18,7 @@ const Cart = sequelize.define('Cart', {
     },
   },
   productId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(255),
     allowNull: false,
     references: {
       model: Product, // Relasi ke Product

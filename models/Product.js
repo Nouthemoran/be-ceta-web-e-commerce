@@ -4,6 +4,10 @@ const sequelize = require('../config/db');
 const Product = sequelize.define(
   'Product',
   {
+    id: {
+      type: DataTypes.STRING(255),
+      primaryKey:true
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,6 +26,12 @@ const Product = sequelize.define(
     imageUrl: {
       type: DataTypes.STRING,
     },
+    // story: {
+    //   type: DataTypes.STRING,
+    // },
+    // : {
+    //   type: DataTypes.STRING,
+    // },
   },
   {
     timestamps: true,

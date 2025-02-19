@@ -5,6 +5,11 @@ const sequelize = require('../config/db');
 const User = sequelize.define(
   'User', 
   {
+    id: {
+      type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
+      defaultValue: DataTypes.UUIDV4, // generate UUID otomatis
+      primaryKey:true
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
