@@ -4,11 +4,12 @@ const User = require('./User'); // Import User
 
 const Order = sequelize.define('Order', {
   id: {
-    type: DataTypes.STRING,
-    primaryKey:true
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
   },
   userId: {
-    type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
+    type: DataTypes.UUID, // SESUAIKAN dengan Users.id
     allowNull: false,
     references: {
       model: User, // Relasi ke User

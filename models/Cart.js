@@ -1,41 +1,24 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const Product = require('./Product');
-const User = require('./User'); // Import User
+const User = require('./User'); 
 
 const Cart = sequelize.define('Cart', {
   id: {
-    type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
-    defaultValue: DataTypes.UUIDV4, // generate UUID otomatis
-    primaryKey:true
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
   },
   userId: {
-    type: DataTypes.CHAR(36).BINARY, // SESUAIKAN dengan Users.id
+    type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: User, // Relasi ke User
-      key: 'id',
-    },
-  },
-  productId: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-    references: {
-      model: Product, // Relasi ke Product
-      key: 'id',
-    },
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 1,
-  },
+      model: User,
+      key: 'id'
+    }
+  }
 });
 
-// Bikin relasi antara Cart -> Product
-Cart.belongsTo(Product, { foreignKey: 'productId', as: 'product' });
-
-// Bikin relasi antara Cart -> User
-Cart.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+// Relasi: Cart milik satu User
+Cart.belongsTo(User, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
 
 module.exports = Cart;

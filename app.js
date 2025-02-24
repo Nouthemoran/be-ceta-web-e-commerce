@@ -23,7 +23,7 @@ sequelize
     console.log('✅ Database Connected!');
 
     // Sync semua model ke database
-    return sequelize.sync({ alter: true });
+    return sequelize.sync({ alter: false  });
   })
   .then(() => {
     console.log('✅ Database Synced!');
