@@ -1,6 +1,5 @@
 const express = require('express');
-const sequelize = require('./config/db');
-require('dotenv').config();
+const db = require('./models/index'); 
 
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -17,13 +16,11 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 
 // Cek koneksi DB
-sequelize
-  .authenticate()
+db.sequelize.authenticate()
   .then(() => {
     console.log('✅ Database Connected!');
-
     // Sync semua model ke database
-    return sequelize.sync({ alter: false  });
+    return db.sequelize.sync({ alter: false });
   })
   .then(() => {
     console.log('✅ Database Synced!');

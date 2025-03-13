@@ -1,40 +1,28 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-const Cart = require('./Cart');
-const ProductVariant = require('./ProductVariant');
+const { Model, DataTypes } = require('sequelize');
 
-const CartItem = sequelize.define('CartItem', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
-  cartId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: Cart,
-      key: 'id'
+module.exports = (sequelize) => {
+  class CartItem extends Model {}
+
+  CartItem.init(
+    {
+      id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
+      },
+      quantity: { 
+        type: DataTypes.INTEGER, 
+        allowNull: false, 
+        defaultValue: 1 
+      },
+    },
+    {
+      sequelize,
+      modelName: 'CartItem',
+      tableName: 'cart_items',
+      timestamps: true, // Optional, sesuai kebutuhan
     }
-  },
-  variantId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: ProductVariant,
-      key: 'id'
-    }
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
-    validate: { min: 1 }
-  }
-});
+  );
 
-// Relasi: CartItem milik satu Cart
-CartItem.belongsTo(Cart, { foreignKey: 'cartId', onDelete: 'CASCADE' });
-// Relasi: CartItem berhubungan dengan ProductVariant, bukan Product
-CartItem.belongsTo(ProductVariant, { foreignKey: 'variantId', onDelete: 'CASCADE' });
-
-module.exports = CartItem;
+  return CartItem;
+};

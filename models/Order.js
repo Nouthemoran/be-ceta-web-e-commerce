@@ -1,36 +1,31 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-const User = require('./User'); // Import User
+const { Model, DataTypes } = require('sequelize');
 
-const Order = sequelize.define('Order', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
-  userId: {
-    type: DataTypes.UUID, // SESUAIKAN dengan Users.id
-    allowNull: false,
-    references: {
-      model: User, // Relasi ke User
-      key: 'id',
+module.exports = (sequelize) => {
+  class Order extends Model {}
+
+  Order.init(
+    {
+      id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
+      },
+      totalPrice: { 
+        type: DataTypes.FLOAT, 
+        allowNull: false 
+      },
+      status: { 
+        type: DataTypes.STRING, 
+        defaultValue: "pending" 
+      },
     },
-  },
-  totalPrice: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  status: {
-    type: DataTypes.STRING,
-    defaultValue: 'pending', // pending, paid, shipped, cancelled
-  },
-  items: {
-    type: DataTypes.TEXT, // Simpan JSON (produk yang dipesan)
-    allowNull: false,
-  },
-});
+    {
+      sequelize,
+      modelName: 'Order',
+      tableName: 'orders',
+      timestamps: true, // sesuaikan jika diperlukan
+    }
+  );
 
-// Relasi ke User
-Order.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-
-module.exports = Order;
+  return Order;
+};

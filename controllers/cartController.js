@@ -1,83 +1,121 @@
 const Cart = require('../models/Cart');
-const Product = require('../models/Product');  
+const CartItem = require('../models/CartItem');
+const ProductVariant = require('../models/ProductVariant');
 
+// GET CART ITEMS (dengan detail variant)
 const getCartItems = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const cartItems = await Cart.findAll({
+    // Cari cart berdasarkan userId dan sertakan CartItem beserta detail ProductVariant
+    const cart = await Cart.findOne({
       where: { userId },
       include: [
-        { model: Product, as: 'product', attributes: ['id', 'name', 'price'] }
+        {
+          model: CartItem,
+          as: 'cartItems',
+          include: [
+            {
+              model: ProductVariant,
+              as: 'variant',
+              attributes: ['id', 'size', 'designName', 'price', 'stock'] // sesuaikan field yang diperlukan
+            }
+          ]
+        }
       ]
     });
 
-    res.status(200).json(cartItems);
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.status(200).json(cart);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-  
-// 2️⃣ POST Add Item to Cart
+
+// ADD ITEM TO CART (menggunakan variant)
 const addCartItem = async (req, res) => {
-    try {
-      const userId = req.user.id;
-      const { productId, quantity } = req.body;
-  
-      const product = await Product.findByPk(productId);
-      if (!product) {
-        return res.status(404).json({ message: 'Product tidak ditemukan' });
-      }
-  
-      const newItem = await Cart.create({
-        userId,
-        productId,
-        quantity
-      });
-  
-      res.status(201).json({ message: 'Item berhasil ditambahkan', data: newItem });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+  try {
+    const userId = req.user.id;
+    const { variantId, quantity } = req.body;
+
+    // Pastikan product variant ada
+    const variant = await ProductVariant.findByPk(variantId);
+    if (!variant) {
+      return res.status(404).json({ message: 'Product variant not found' });
     }
-  };
-  
-// 3️⃣ PUT Update Cart Item (Quantity)
-const updateCartItem = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { quantity } = req.body;
-  
-      const cartItem = await Cart.findByPk(id);
-      if (!cartItem) {
-        return res.status(404).json({ message: 'Item di keranjang tidak ditemukan' });
-      }
-  
-      cartItem.quantity = quantity;
+
+    // Cari cart user. Jika belum ada, buat cart baru untuk user tersebut.
+    let cart = await Cart.findOne({ where: { userId } });
+    if (!cart) {
+      cart = await Cart.create({ userId });
+    }
+
+    // Cek apakah item dengan variant yang sama sudah ada di cart, jika iya, update quantity
+    let cartItem = await CartItem.findOne({
+      where: { cartId: cart.id, variantId }
+    });
+
+    if (cartItem) {
+      cartItem.quantity += quantity;
       await cartItem.save();
-  
-      res.status(200).json({ message: 'Item berhasil diperbarui', data: cartItem });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    } else {
+      cartItem = await CartItem.create({
+        cartId: cart.id,
+        variantId,
+        quantity,
+      });
     }
-  };
 
-// 4️⃣ DELETE Cart Item
+    res.status(201).json({ message: 'Item added to cart', data: cartItem });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// UPDATE CART ITEM (quantity)
+const updateCartItem = async (req, res) => {
+  try {
+    const { id } = req.params; // id CartItem
+    const { quantity } = req.body;
+
+    const cartItem = await CartItem.findByPk(id);
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Cart item not found' });
+    }
+
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    res.status(200).json({ message: 'Cart item updated', data: cartItem });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// DELETE CART ITEM
 const deleteCartItem = async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      const cartItem = await Cart.findByPk(id);
-      if (!cartItem) {
-        return res.status(404).json({ message: 'Item di keranjang tidak ditemukan' });
-      }
-  
-      await cartItem.destroy();
-  
-      res.status(200).json({ message: 'Item berhasil dihapus' });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
+  try {
+    const { id } = req.params; // id CartItem
 
-module.exports = { getCartItems, addCartItem, updateCartItem, deleteCartItem };
+    const cartItem = await CartItem.findByPk(id);
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Cart item not found' });
+    }
+
+    await cartItem.destroy();
+
+    res.status(200).json({ message: 'Cart item deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = {
+  getCartItems,
+  addCartItem,
+  updateCartItem,
+  deleteCartItem,
+};

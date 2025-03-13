@@ -1,24 +1,23 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-const User = require('./User'); 
+const { Model, DataTypes } = require('sequelize');
 
-const Cart = sequelize.define('Cart', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
-  userId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id'
+module.exports = (sequelize) => {
+  class Cart extends Model {}
+
+  Cart.init(
+    {
+      id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
+      },
+    },
+    {
+      sequelize,
+      modelName: 'Cart',
+      tableName: 'carts',
+      timestamps: true, // Optional, sesuaikan kebutuhan
     }
-  }
-});
+  );
 
-// Relasi: Cart milik satu User
-Cart.belongsTo(User, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
-
-module.exports = Cart;
+  return Cart;
+};

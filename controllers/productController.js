@@ -4,16 +4,14 @@ const { generateCustomId } = require('../utils/generateCustomId');
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
-    const { name, price, description, stock, imageUrl } = req.body;
+    const { name, description, imageUrl } = req.body;
 
     const customProductId = generateCustomId('PRODUCT'); // PRODUCT-XYZ12345
 
     const newProduct = await Product.create({
       id: customProductId,
       name,
-      price,
       description,
-      stock,
       imageUrl,
     });
 
@@ -54,7 +52,7 @@ const getProductById = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, description, stock, imageUrl } = req.body;
+    const { name, description, imageUrl } = req.body;
 
     const product = await Product.findByPk(id);
 
@@ -64,9 +62,7 @@ const updateProduct = async (req, res) => {
 
     await product.update({
       name,
-      price,
       description,
-      stock,
       imageUrl,
     });
 

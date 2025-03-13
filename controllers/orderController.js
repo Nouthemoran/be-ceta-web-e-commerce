@@ -1,60 +1,82 @@
 const Order = require('../models/Order');
+const OrderItem = require('../models/OrderItem');
 const Cart = require('../models/Cart');
-const Product = require('../models/Product');
+const CartItem = require('../models/CartItem');
+const ProductVariant = require('../models/ProductVariant');
 const { generateOrderId } = require('../utils/generateCustomId');
 
 // 1️⃣ Checkout dari Cart (Semua Barang di Keranjang)
 const checkoutFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
-
     const customOrderId = generateOrderId();
 
-    const cartItems = await Cart.findAll({
+    // Cari cart user beserta cartItems dan detail variant-nya
+    const cart = await Cart.findOne({
       where: { userId },
-      include: [{ model: Product, as: 'product' }],
+      include: [
+        {
+          model: CartItem,
+          as: 'cartItems',
+          include: [
+            {
+              model: ProductVariant,
+              as: 'variant',
+              attributes: ['id', 'designName', 'price', 'stock'] // sesuaikan jika perlu
+            }
+          ]
+        }
+      ]
     });
 
-    if (cartItems.length === 0) {
+    if (!cart || !cart.cartItems.length) {
       return res.status(400).json({ message: 'Keranjang kosong!' });
     }
 
     let totalPrice = 0;
-    const orderItems = [];
 
-    for (const item of cartItems) {
-      const { product, quantity } = item;
-      if (quantity > product.stock) {
+    // Validasi stok dan hitung total harga
+    for (const item of cart.cartItems) {
+      const variant = item.variant;
+      const quantity = item.quantity;
+
+      if (quantity > variant.stock) {
         return res.status(400).json({
-          message: `Stok produk ${product.name} tidak tersedia!`,
+          message: `Stok produk variant ${variant.designName} tidak tersedia!`
         });
       }
-
-      totalPrice += product.price * quantity;
-      orderItems.push({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity,
-      });
-
-      // Kurangi stok produk
-      product.stock -= quantity;
-      await product.save();
+      totalPrice += variant.price * quantity;
     }
 
-    // Buat order baru dengan customOrderId
+    // Buat order baru
     const order = await Order.create({
-      id: customOrderId, // <-- Ini masukin customOrderId
+      id: customOrderId,
       userId,
       totalPrice,
-      items: JSON.stringify(orderItems),
+      status: 'pending'
     });
 
-    // Kosongin keranjang user setelah checkout
-    await Cart.destroy({ where: { userId } });
+    // Buat entri OrderItem untuk tiap item di keranjang dan kurangi stok variant
+    for (const item of cart.cartItems) {
+      const variant = item.variant;
+      const quantity = item.quantity;
 
-    res.status(201).json(order);
+      await OrderItem.create({
+        orderId: order.id,
+        variantId: variant.id,
+        quantity,
+        priceAtPurchase: variant.price
+      });
+
+      // Kurangi stok variant
+      variant.stock -= quantity;
+      await variant.save();
+    }
+
+    // Hapus semua item di keranjang setelah checkout
+    await CartItem.destroy({ where: { cartId: cart.id } });
+
+    res.status(201).json({ message: 'Order berhasil dibuat', data: order });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -64,41 +86,42 @@ const checkoutFromCart = async (req, res) => {
 const buyNow = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
-
+    const { variantId, quantity } = req.body;
     const customOrderId = generateOrderId();
 
-    const product = await Product.findByPk(productId);
-
-    if (!product) {
-      return res.status(404).json({ message: 'Produk tidak ditemukan!' });
+    // Cari produk variant berdasarkan variantId
+    const variant = await ProductVariant.findByPk(variantId);
+    if (!variant) {
+      return res.status(404).json({ message: 'Produk variant tidak ditemukan!' });
     }
 
-    if (quantity > product.stock) {
+    if (quantity > variant.stock) {
       return res.status(400).json({ message: 'Stok tidak tersedia!' });
     }
 
-    const totalPrice = product.price * quantity;
+    const totalPrice = variant.price * quantity;
 
+    // Buat order baru
     const order = await Order.create({
-      id: customOrderId, // <-- Ini masukin customOrderId
+      id: customOrderId,
       userId,
       totalPrice,
-      items: JSON.stringify([
-        {
-          productId: product.id,
-          name: product.name,
-          price: product.price,
-          quantity,
-        },
-      ]),
+      status: 'pending'
     });
 
-    // Kurangi stok produk
-    product.stock -= quantity;
-    await product.save();
+    // Buat order item untuk pesanan langsung
+    await OrderItem.create({
+      orderId: order.id,
+      variantId: variant.id,
+      quantity,
+      priceAtPurchase: variant.price
+    });
 
-    res.status(201).json(order);
+    // Kurangi stok produk variant
+    variant.stock -= quantity;
+    await variant.save();
+
+    res.status(201).json({ message: 'Order berhasil dibuat', data: order });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -108,12 +131,23 @@ const buyNow = async (req, res) => {
 const getOrders = async (req, res) => {
   try {
     const userId = req.user.id;
-
     const orders = await Order.findAll({
       where: { userId },
       order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: OrderItem,
+          as: 'orderItems',
+          include: [
+            {
+              model: ProductVariant,
+              as: 'variant',
+              attributes: ['id', 'designName', 'price']
+            }
+          ]
+        }
+      ]
     });
-
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });

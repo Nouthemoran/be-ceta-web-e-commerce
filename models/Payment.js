@@ -1,40 +1,38 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-const Order = require('./Order');
+const { Model, DataTypes } = require('sequelize');
 
-const Payment = sequelize.define('Payment', {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
-  },
-  orderId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: Order,
-      key: 'id',
+module.exports = (sequelize) => {
+  class Payment extends Model {}
+
+  Payment.init(
+    {
+      id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
+      },
+      paymentMethod: { 
+        type: DataTypes.STRING, 
+        allowNull: false 
+      },
+      paymentStatus: { 
+        type: DataTypes.STRING, 
+        defaultValue: "pending" 
+      },
+      transactionId: { 
+        type: DataTypes.STRING, 
+        unique: true 
+      },
+      paymentUrl: { 
+        type: DataTypes.STRING 
+      },
     },
-  },
-  paymentMethod: {
-    type: DataTypes.STRING, // Ex: 'bank_transfer', 'credit_card', 'ewallet'
-    allowNull: false,
-  },
-  paymentStatus: {
-    type: DataTypes.ENUM('pending', 'paid', 'failed', 'expired'),
-    defaultValue: 'pending',
-  },
-  transactionId: {
-    type: DataTypes.STRING, // ID dari Midtrans
-    allowNull: false,
-  },
-  paymentUrl: {
-    type: DataTypes.STRING, // Redirect URL buat bayar
-    allowNull: true,
-  }
-});
+    {
+      sequelize,
+      modelName: 'Payment',
+      tableName: 'payments',
+      timestamps: true, // Sesuaikan jika perlu
+    }
+  );
 
-// Relasi ke Order
-Payment.belongsTo(Order, { foreignKey: 'orderId', as: 'order' });
-
-module.exports = Payment;
+  return Payment;
+};
