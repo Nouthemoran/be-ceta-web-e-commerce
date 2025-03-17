@@ -1,10 +1,16 @@
-const Product = require('../models/Product');
+const { Product, Category } = require('../models/Index');
 const { generateCustomId } = require('../utils/generateCustomId');
 
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
     const { name, description, imageUrl, categoryId } = req.body;
+
+    // Pastikan categoryId ada di database
+    const category = await Category.findByPk(categoryId);
+    if (!category) {
+      return res.status(400).json({ message: 'Category not found' });
+    }
 
     const customProductId = generateCustomId('PRODUCT'); // PRODUCT-XYZ12345
 

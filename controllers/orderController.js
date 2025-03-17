@@ -1,8 +1,5 @@
-const Order = require('../models/Order');
-const OrderItem = require('../models/OrderItem');
-const Cart = require('../models/Cart');
-const CartItem = require('../models/CartItem');
-const ProductVariant = require('../models/ProductVariant');
+const { Order, OrderItem, Cart, CartItem, ProductVariant } = require('../models/Index');
+
 const { generateOrderId } = require('../utils/generateCustomId');
 
 // 1️⃣ Checkout dari Cart (Semua Barang di Keranjang)

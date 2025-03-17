@@ -1,6 +1,4 @@
-const Cart = require('../models/Cart');
-const CartItem = require('../models/CartItem');
-const ProductVariant = require('../models/ProductVariant');
+const { Cart, ProductVariant } = require('../models/Index');
 
 // GET CART ITEMS (dengan detail variant)
 const getCartItems = async (req, res) => {

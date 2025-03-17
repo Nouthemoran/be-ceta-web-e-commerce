@@ -1,6 +1,4 @@
-const Cart = require('../models/Cart');
-const CartItem = require('../models/CartItem');
-const ProductVariant = require('../models/ProductVariant');
+const { Cart, CartItem, ProductVariant} = require('../models/Index');
 // Pastikan objek snap telah diinisialisasi dari midtrans-client atau sesuai implementasi kamu
 const snap = require('../utils/snap'); 
 // Contoh: const snap = new midtransClient.Snap({ isProduction: false, serverKey: process.env.MIDTRANS_SERVER_KEY });

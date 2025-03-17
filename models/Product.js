@@ -22,6 +22,17 @@ module.exports = (sequelize) => {
       imageUrl: { 
         type: DataTypes.STRING 
       },
+      categoryId: {
+        type: DataTypes.UUID, // Sesuaikan tipe datanya
+        allowNull: false, // Tidak boleh NULL
+        references: {
+          model: 'Categories', // Sesuai nama tabel di database
+          key: 'id',
+        },
+        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onUpdate: 'CASCADE',
+      },
+  
     },
     {
       sequelize,
