@@ -4,7 +4,7 @@ const { generateCustomId } = require('../utils/generateCustomId');
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
-    const { name, description, imageUrl } = req.body;
+    const { name, description, imageUrl, categoryId } = req.body;
 
     const customProductId = generateCustomId('PRODUCT'); // PRODUCT-XYZ12345
 
@@ -13,6 +13,7 @@ const createProduct = async (req, res) => {
       name,
       description,
       imageUrl,
+      categoryId,
     });
 
     res.status(201).json({ message: 'Product Created', data: newProduct });
@@ -24,7 +25,7 @@ const createProduct = async (req, res) => {
 // GET ALL PRODUCTS
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.findAll({include: Category});
     res.status(200).json({ data: products });
   } catch (error) {
     res.status(500).json({ message: 'Failed to get products', error: error.message });
@@ -52,7 +53,7 @@ const getProductById = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, imageUrl } = req.body;
+    const { name, description, imageUrl, categoryId } = req.body;
 
     const product = await Product.findByPk(id);
 
@@ -64,6 +65,7 @@ const updateProduct = async (req, res) => {
       name,
       description,
       imageUrl,
+      categoryId,
     });
 
     res.status(200).json({ message: 'Product Updated', data: product });

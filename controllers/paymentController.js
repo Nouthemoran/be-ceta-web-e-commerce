@@ -1,71 +1,94 @@
+const Cart = require('../models/Cart');
+const CartItem = require('../models/CartItem');
+const ProductVariant = require('../models/ProductVariant');
+// Pastikan objek snap telah diinisialisasi dari midtrans-client atau sesuai implementasi kamu
+const snap = require('../utils/snap'); 
+// Contoh: const snap = new midtransClient.Snap({ isProduction: false, serverKey: process.env.MIDTRANS_SERVER_KEY });
+
 const createPayment = async (req, res) => {
-    try {
-      const { userId, customerName, customerEmail, productId, quantity } = req.body;
-  
-      let itemDetails = [];
-      let grossAmount = 0;
-  
-      // 🛒 Checkout dari Cart
-      if (!productId) {
-        const cartItems = await Cart.findAll({
-          where: { userId },
-          include: [{ model: Product, as: 'product', attributes: ['id', 'name', 'price'] }]
-        });
-  
-        if (cartItems.length === 0) {
-          return res.status(400).json({ error: 'Keranjang kosong' });
-        }
-  
-        itemDetails = cartItems.map(item => ({
-          id: item.product.id.toString(),
-          price: item.product.price,
-          quantity: item.quantity,
-          name: item.product.name,
-        }));
-  
-        grossAmount = cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-      } else {
-        // ⚡ "Beli Sekarang" langsung pakai productId
-        const product = await Product.findByPk(productId);
-  
-        if (!product) {
-          return res.status(404).json({ error: 'Produk tidak ditemukan' });
-        }
-  
-        itemDetails.push({
-          id: product.id.toString(),
-          price: product.price,
-          quantity: quantity || 1,
-          name: product.name,
-        });
-  
-        grossAmount = product.price * (quantity || 1);
-      }
-  
-      const orderId = `ORDER-${Date.now()}`;
-  
-      const parameter = {
-        transaction_details: {
-          order_id: orderId,
-          gross_amount: grossAmount,
-        },
-        item_details: itemDetails,
-        customer_details: {
-          first_name: customerName,
-          email: customerEmail,
-        },
-      };
-  
-      const transaction = await snap.createTransaction(parameter);
-  
-      res.status(200).json({
-        token: transaction.token,
-        redirect_url: transaction.redirect_url,
+  try {
+    // Gunakan variantId untuk "Buy Now", jika tidak ada berarti checkout dari cart
+    const { userId, customerName, customerEmail, variantId, quantity } = req.body;
+
+    let itemDetails = [];
+    let grossAmount = 0;
+
+    // 🛒 Checkout dari Cart
+    if (!variantId) {
+      // Cari cart user beserta cartItems dan detail variant-nya
+      const cart = await Cart.findOne({
+        where: { userId },
+        include: [
+          {
+            model: CartItem,
+            as: 'cartItems',
+            include: [
+              {
+                model: ProductVariant,
+                as: 'variant',
+                attributes: ['id', 'designName', 'price']
+              }
+            ]
+          }
+        ]
       });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+
+      if (!cart || !cart.cartItems.length) {
+        return res.status(400).json({ error: 'Keranjang kosong' });
+      }
+
+      itemDetails = cart.cartItems.map(item => ({
+        id: item.variant.id.toString(),
+        price: item.variant.price,
+        quantity: item.quantity,
+        name: item.variant.designName,
+      }));
+
+      grossAmount = cart.cartItems.reduce(
+        (total, item) => total + (item.variant.price * item.quantity),
+        0
+      );
+    } else {
+      // ⚡ "Buy Now" langsung pakai variantId
+      const variant = await ProductVariant.findByPk(variantId);
+      if (!variant) {
+        return res.status(404).json({ error: 'Produk variant tidak ditemukan' });
+      }
+
+      itemDetails.push({
+        id: variant.id.toString(),
+        price: variant.price,
+        quantity: quantity || 1,
+        name: variant.designName,
+      });
+
+      grossAmount = variant.price * (quantity || 1);
     }
-  };
-  
-  module.exports = { createPayment };
-  
+
+    // Buat order id untuk keperluan transaksi payment
+    const orderId = `ORDER-${Date.now()}`;
+
+    const parameter = {
+      transaction_details: {
+        order_id: orderId,
+        gross_amount: grossAmount,
+      },
+      item_details: itemDetails,
+      customer_details: {
+        first_name: customerName,
+        email: customerEmail,
+      },
+    };
+
+    const transaction = await snap.createTransaction(parameter);
+
+    res.status(200).json({
+      token: transaction.token,
+      redirect_url: transaction.redirect_url,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { createPayment };

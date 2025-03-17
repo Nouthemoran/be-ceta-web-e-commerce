@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User } = require('../models/Index');
 const { generateToken } = require('../utils/generateToken');
 
 // REGISTER

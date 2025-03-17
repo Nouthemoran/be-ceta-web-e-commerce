@@ -1,7 +1,7 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     // Method untuk hash password
     async hashPassword() {
