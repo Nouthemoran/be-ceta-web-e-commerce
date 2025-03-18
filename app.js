@@ -6,16 +6,18 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const productVariantRoutes = require('./routes/variantRoutes');
 
 const app = express();
 app.use(express.json());
 
 // main routes
-app.use('/api/categories', categoryRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/variant', productVariantRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/user', userRoutes);
 
 // Cek koneksi DB
 db.sequelize.authenticate()
