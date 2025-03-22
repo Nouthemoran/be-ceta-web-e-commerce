@@ -1,22 +1,21 @@
-const { Cart, ProductVariant } = require('../models/Index');
+const { Cart, ProductVariant, CartItem   } = require('../models/Index');
 
 // GET CART ITEMS (dengan detail variant)
 const getCartItems = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Cari cart berdasarkan userId dan sertakan CartItem beserta detail ProductVariant
     const cart = await Cart.findOne({
       where: { userId },
       include: [
         {
           model: CartItem,
-          as: 'cartItems',
+          as: 'cartItems', // Harus sama dengan alias di model
           include: [
             {
               model: ProductVariant,
               as: 'variant',
-              attributes: ['id', 'size', 'designName', 'price', 'stock'] // sesuaikan field yang diperlukan
+              attributes: ['id', 'size', 'designName', 'price', 'stock']
             }
           ]
         }
@@ -33,12 +32,13 @@ const getCartItems = async (req, res) => {
   }
 };
 
+
 // ADD ITEM TO CART (menggunakan variant)
 const addCartItem = async (req, res) => {
   try {
     const userId = req.user.id;
     const { variantId, quantity } = req.body;
-
+    
     // Pastikan product variant ada
     const variant = await ProductVariant.findByPk(variantId);
     if (!variant) {

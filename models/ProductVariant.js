@@ -41,6 +41,16 @@ module.exports = (sequelize) => {
       weight: { 
         type: DataTypes.FLOAT 
       },
+      productId: {
+        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
+        allowNull: false, // Tidak boleh NULL
+        references: {
+          model: 'products', // Sesuai nama tabel di database
+          key: 'id',
+        },
+        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onUpdate: 'CASCADE',
+      },
     },
     {
       sequelize,

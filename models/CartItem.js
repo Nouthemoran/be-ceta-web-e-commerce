@@ -15,6 +15,16 @@ module.exports = (sequelize) => {
         allowNull: false, 
         defaultValue: 1 
       },
+      variantId: {
+        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
+        allowNull: false, // Tidak boleh NULL
+        references: {
+          model: 'product_variants', // Sesuai nama tabel di database
+          key: 'id',
+        },
+        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onUpdate: 'CASCADE',
+      },
     },
     {
       sequelize,

@@ -4,7 +4,7 @@ const { createProductVariant, getProductVariantById, getProductVariants, updateP
 const { authMiddleware } = require('../middleware/authMiddleware');
 
 router.post('/', authMiddleware, createProductVariant);
-router.get('/:productId', authMiddleware, getProductVariants);
+router.get('/product/:productId', authMiddleware, getProductVariants);
 router.get('/:id', authMiddleware, getProductVariantById);
 router.put('/:id', authMiddleware, updateProductVariant);
 router.delete('/:id', authMiddleware, deleteProductVariant);

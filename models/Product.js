@@ -23,10 +23,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING 
       },
       categoryId: {
-        type: DataTypes.UUID, // Sesuaikan tipe datanya
+        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
         allowNull: false, // Tidak boleh NULL
         references: {
-          model: 'Categories', // Sesuai nama tabel di database
+          model: 'categories', // Sesuai nama tabel di database
           key: 'id',
         },
         onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus

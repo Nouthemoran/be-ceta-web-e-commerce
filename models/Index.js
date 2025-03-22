@@ -26,13 +26,13 @@
   Cart.belongsTo(User, { foreignKey: 'userId' });
 
   // Cart ↔ CartItem
-  Cart.hasMany(CartItem, { foreignKey: 'cartId' });
-  CartItem.belongsTo(Cart, { foreignKey: 'cartId' });
+  Cart.hasMany(CartItem, { foreignKey: 'cartId', as: 'cartItems' });
+  CartItem.belongsTo(Cart, { foreignKey: 'cartId', as: 'cart' });
 
   // ProductVariant ↔ CartItem
-  ProductVariant.hasMany(CartItem, { foreignKey: 'variantId' });
-  CartItem.belongsTo(ProductVariant, { foreignKey: 'variantId' });
-
+  ProductVariant.hasMany(CartItem, { foreignKey: 'variantId', as: 'cartItems' });
+  CartItem.belongsTo(ProductVariant, { foreignKey: 'variantId', as: 'variant' }); // Tambahkan alias
+  
   // User ↔ Order
   User.hasMany(Order, { foreignKey: 'userId' });
   Order.belongsTo(User, { foreignKey: 'userId' });
