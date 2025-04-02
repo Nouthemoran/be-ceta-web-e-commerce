@@ -12,10 +12,7 @@ const createProduct = async (req, res) => {
       return res.status(400).json({ message: 'Category not found' });
     }
 
-    const customProductId = generateCustomId('PRODUCT'); // PRODUCT-XYZ12345
-
     const newProduct = await Product.create({
-      id: customProductId,
       name,
       description,
       imageUrl,

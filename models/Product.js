@@ -1,16 +1,14 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  class Product extends Model {
-    // Jika diperlukan, tambahkan method instance atau static di sini
-  }
+  class Product extends Model {}
 
   Product.init(
     {
       id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
+        primaryKey: true 
       },
       name: { 
         type: DataTypes.STRING, 
@@ -23,21 +21,20 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING 
       },
       categoryId: {
-        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
-        allowNull: false, // Tidak boleh NULL
+        type: DataTypes.UUID, // Ubah jadi UUID
+        allowNull: false, 
         references: {
           model: 'categories', // Sesuai nama tabel di database
           key: 'id',
         },
-        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onDelete: 'CASCADE', 
         onUpdate: 'CASCADE',
       },
-  
     },
     {
       sequelize,
       modelName: 'Product',
-      tableName: 'products', // opsional, bisa disesuaikan dengan nama tabel di DB
+      tableName: 'products',
       timestamps: true,
     }
   );

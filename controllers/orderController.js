@@ -6,7 +6,7 @@ const { generateOrderId } = require('../utils/generateCustomId');
 const checkoutFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const customOrderId = generateOrderId();
+    // const customOrderId = generateOrderId();
 
     // Cari cart user beserta cartItems dan detail variant-nya
     const cart = await Cart.findOne({
@@ -47,7 +47,6 @@ const checkoutFromCart = async (req, res) => {
 
     // Buat order baru
     const order = await Order.create({
-      id: customOrderId,
       userId,
       totalPrice,
       status: 'pending'
@@ -84,7 +83,7 @@ const buyNow = async (req, res) => {
   try {
     const userId = req.user.id;
     const { variantId, quantity } = req.body;
-    const customOrderId = generateOrderId();
+    // const customOrderId = generateOrderId();
 
     // Cari produk variant berdasarkan variantId
     const variant = await ProductVariant.findByPk(variantId);
@@ -100,11 +99,11 @@ const buyNow = async (req, res) => {
 
     // Buat order baru
     const order = await Order.create({
-      id: customOrderId,
       userId,
       totalPrice,
       status: 'pending'
     });
+    console.log("Order berhasil dibuat dengan ID:", order.id);
 
     // Buat order item untuk pesanan langsung
     await OrderItem.create({

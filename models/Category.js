@@ -1,14 +1,22 @@
+const { Model, DataTypes } = require('sequelize');
 
-const { Model } = require('sequelize');
-
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   class Category extends Model {}
 
   Category.init(
     {
-      id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      name: { type: DataTypes.STRING, allowNull: false },
-      description: { type: DataTypes.TEXT },
+      id: { 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
+        primaryKey: true 
+      },
+      name: { 
+        type: DataTypes.STRING, 
+        allowNull: false 
+      },
+      description: { 
+        type: DataTypes.TEXT 
+      },
     },
     {
       sequelize,

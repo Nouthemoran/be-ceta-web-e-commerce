@@ -38,12 +38,12 @@
   Order.belongsTo(User, { foreignKey: 'userId' });
 
   // Order ↔ OrderItem
-  Order.hasMany(OrderItem, { foreignKey: 'orderId' });
-  OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+  Order.hasMany(OrderItem, { foreignKey: 'orderId', as: 'orderItems' });
+  OrderItem.belongsTo(Order, { foreignKey: 'orderId', as: 'order' }); // Tambahkan alias juga  
 
   // ProductVariant ↔ OrderItem
-  ProductVariant.hasMany(OrderItem, { foreignKey: 'variantId' });
-  OrderItem.belongsTo(ProductVariant, { foreignKey: 'variantId' });
+  ProductVariant.hasMany(OrderItem, { foreignKey: 'variantId', as: 'orderItems' });
+  OrderItem.belongsTo(ProductVariant, { foreignKey: 'variantId', as: 'variant' }); // Tambahkan alias  
 
   // Order ↔ Payment
   Order.hasOne(Payment, { foreignKey: 'orderId' });

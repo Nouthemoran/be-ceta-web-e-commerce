@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
   OrderItem.init(
     {
       id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
+        primaryKey: true 
       },
       quantity: { 
         type: DataTypes.INTEGER, 
@@ -18,6 +18,26 @@ module.exports = (sequelize) => {
       priceAtPurchase: { 
         type: DataTypes.FLOAT, 
         allowNull: false 
+      },
+      orderId: {
+        type: DataTypes.UUID, // Sesuaikan dengan Order
+        allowNull: false,
+        references: {
+          model: 'orders', // Sesuai nama tabel di database
+          key: 'id',
+        },
+        onDelete: 'CASCADE', 
+        onUpdate: 'CASCADE',
+      },
+      variantId: {
+        type: DataTypes.UUID, // Sesuaikan dengan ProductVariant
+        allowNull: false,
+        references: {
+          model: 'product_variants', // Sesuai nama tabel di database
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     },
     {

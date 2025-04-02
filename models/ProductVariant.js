@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
   ProductVariant.init(
     {
       id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
+        primaryKey: true 
       },
       size: { 
         type: DataTypes.STRING 
@@ -42,13 +42,13 @@ module.exports = (sequelize) => {
         type: DataTypes.FLOAT 
       },
       productId: {
-        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
-        allowNull: false, // Tidak boleh NULL
+        type: DataTypes.UUID, // Ubah jadi UUID
+        allowNull: false, 
         references: {
           model: 'products', // Sesuai nama tabel di database
           key: 'id',
         },
-        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onDelete: 'CASCADE', 
         onUpdate: 'CASCADE',
       },
     },
@@ -56,7 +56,7 @@ module.exports = (sequelize) => {
       sequelize,
       modelName: 'ProductVariant',
       tableName: 'product_variants',
-      timestamps: true, // sesuaikan jika perlu
+      timestamps: true,
     }
   );
 

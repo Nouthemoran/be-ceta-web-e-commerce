@@ -3,13 +3,11 @@ const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    // Method untuk hash password
     async hashPassword() {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
 
-    // Method untuk membandingkan password saat login
     async comparePassword(password) {
       return await bcrypt.compare(password, this.password);
     }
@@ -17,7 +15,11 @@ module.exports = (sequelize, DataTypes) => {
 
   User.init(
     {
-      id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       username: { type: DataTypes.STRING, allowNull: false },
       password: { type: DataTypes.STRING, allowNull: false },
       email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -25,14 +27,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
-      tableName: 'users', // opsional: sesuaikan dengan nama tabel di DB
+      tableName: 'users',
       timestamps: true,
       hooks: {
-        // Hash password sebelum create
         beforeCreate: async (user) => {
           await user.hashPassword();
         },
-        // Hash password sebelum update jika password berubah
         beforeUpdate: async (user) => {
           if (user.changed('password')) {
             await user.hashPassword();

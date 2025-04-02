@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
   CartItem.init(
     {
       id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
+        primaryKey: true 
       },
       quantity: { 
         type: DataTypes.INTEGER, 
@@ -16,13 +16,13 @@ module.exports = (sequelize) => {
         defaultValue: 1 
       },
       variantId: {
-        type: DataTypes.INTEGER, // Sesuaikan tipe datanya
+        type: DataTypes.UUID, // Sesuaikan tipe datanya dengan ProductVariant
         allowNull: false, // Tidak boleh NULL
         references: {
           model: 'product_variants', // Sesuai nama tabel di database
           key: 'id',
         },
-        onDelete: 'CASCADE', // Jika kategori dihapus, produk ikut terhapus
+        onDelete: 'CASCADE', // Jika variant dihapus, cart item ikut terhapus
         onUpdate: 'CASCADE',
       },
     },
