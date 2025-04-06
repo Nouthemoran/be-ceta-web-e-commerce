@@ -7,11 +7,19 @@ const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productVariantRoutes = require('./routes/variantRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const addressRoutes = require('./routes/addressRoutes');
+const shippingOptionRoutes = require('./routes/shippingOptionRoutes');
 
 const app = express();
 app.use(express.json());
 
 // main routes
+app.use('/api/shipping-options', shippingOptionRoutes);
+app.use('/api/address', addressRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/variant', productVariantRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/order', orderRoutes);
