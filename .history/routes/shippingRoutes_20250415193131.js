@@ -10,6 +10,6 @@ router.get('/provinces', getProvinces);
 router.get('/cities/:provinceId', getCities);
 
 // Get shipping cost
-router.post('/cost', authMiddleware, calculateShippingCost);
+router.post('/cost', authenticateUser, calculateShippingCost);
 
 module.exports = router;

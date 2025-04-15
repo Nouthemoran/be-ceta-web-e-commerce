@@ -96,7 +96,7 @@ const db = {
   Review,
   Address, // ← Tambahkan ini
   Coupon, // ← Tambahan
-  ShippingOptions, // ← Tambahan
+  ShippingOp, // ← Tambahan
 };
 
 module.exports = db;

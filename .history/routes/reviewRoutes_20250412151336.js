@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {createReview, getProductReviews, deleteReview} = require('../controllers/reviewController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Tambah review
 router.post('/', authMiddleware, createReview);

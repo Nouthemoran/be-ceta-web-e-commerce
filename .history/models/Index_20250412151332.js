@@ -15,7 +15,8 @@ const Wishlist = require('./Wishlist')(sequelize, DataTypes); // ✅ Tambahan
 const Review = require('./Review')(sequelize, DataTypes);
 const Address = require('./Address')(sequelize, DataTypes);
 const Coupon = require('./Coupon')(sequelize, DataTypes);
-const ShippingOptions = require('./ShippingOptions')(sequelize, DataTypes);
+const ShippingMethod = require('./ShippingMethod')(sequelize, DataTypes);
+const ShippingOption = require('./ShippingOption')(sequelize, DataTypes);
 
 // Atur relasi antar model
 // Category ↔ Product
@@ -78,8 +79,8 @@ Coupon.hasMany(Order, { foreignKey: 'couponId' });
 Order.belongsTo(Coupon, { foreignKey: 'couponId' });
 
 // Relasi Order ↔ Shipping
-Order.hasOne(ShippingOptions, { foreignKey: 'orderId' });
-ShippingOptions.belongsTo(Order, { foreignKey: 'orderId' });
+Order.hasOne(ShippingOption, { foreignKey: 'orderId' });
+ShippingOption.belongsTo(Order, { foreignKey: 'orderId' });
 
 const db = {
   sequelize,
@@ -96,7 +97,7 @@ const db = {
   Review,
   Address, // ← Tambahkan ini
   Coupon, // ← Tambahan
-  ShippingOptions, // ← Tambahan
+  ShippingMethod, // ← Tambahan
 };
 
 module.exports = db;

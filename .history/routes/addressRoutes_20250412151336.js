@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createAddress, getUserAddresses, deleteAddress, updateAddress } = require('../controllers/addressController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Buat alamat baru
 router.post('/', authMiddleware, createAddress);

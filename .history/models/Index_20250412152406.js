@@ -79,7 +79,7 @@ Order.belongsTo(Coupon, { foreignKey: 'couponId' });
 
 // Relasi Order ↔ Shipping
 Order.hasOne(ShippingOptions, { foreignKey: 'orderId' });
-ShippingOptions.belongsTo(Order, { foreignKey: 'orderId' });
+ShippingOption.belongsTo(Order, { foreignKey: 'orderId' });
 
 const db = {
   sequelize,
@@ -96,7 +96,7 @@ const db = {
   Review,
   Address, // ← Tambahkan ini
   Coupon, // ← Tambahan
-  ShippingOptions, // ← Tambahan
+  ShippingMethod, // ← Tambahan
 };
 
 module.exports = db;

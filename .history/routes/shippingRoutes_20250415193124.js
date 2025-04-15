@@ -4,12 +4,12 @@ const { getProvinces, getCities, calculateShippingCost } = require('../controlle
 const { authMiddleware } = require('../middleware/authMiddleware');
 
 // Get all provinces
-router.get('/provinces', getProvinces);
+router.get('/provinces', shippingController.getProvinces);
 
 // Get cities in a province
-router.get('/cities/:provinceId', getCities);
+router.get('/cities/:provinceId', shippingController.getCities);
 
 // Get shipping cost
-router.post('/cost', authMiddleware, calculateShippingCost);
+router.post('/cost', authenticateUser, shippingController.calculateShippingCost);
 
 module.exports = router;
