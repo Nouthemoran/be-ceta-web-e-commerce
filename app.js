@@ -11,11 +11,13 @@ const wishlistRoutes = require('./routes/wishlistRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const shippingOptionRoutes = require('./routes/shippingOptionRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 app.use(express.json());
 
 // main routes
+app.use('/api/auth', authRoutes);
 app.use('/api/shipping-options', shippingOptionRoutes);
 app.use('/api/address', addressRoutes);
 app.use('/api/reviews', reviewRoutes);
