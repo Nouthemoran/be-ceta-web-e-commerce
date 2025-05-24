@@ -1,5 +1,5 @@
-const axios = require('axios');
-const querystring = require('querystring');
+import axios from 'axios';
+import querystring from 'querystring';
 
 const RAJAONGKIR_API_KEY = process.env.RAJAONGKIR_API_KEY;
 const RAJAONGKIR_BASE_URL = 'https://api.rajaongkir.com/starter';
@@ -8,17 +8,17 @@ const headers = {
   key: RAJAONGKIR_API_KEY,
 };
 
-exports.getProvinces = async () => {
+export const getProvinces = async () => {
   const response = await axios.get(`${RAJAONGKIR_BASE_URL}/province`, { headers });
   return response.data.rajaongkir.results;
 };
 
-exports.getCities = async (provinceId) => {
+export const getCities = async (provinceId) => {
   const response = await axios.get(`${RAJAONGKIR_BASE_URL}/city?province=${provinceId}`, { headers });
   return response.data.rajaongkir.results;
 };
 
-exports.calculateShippingCost = async ({ origin, destination, weight, courier }) => {
+export const calculateShippingCost = async ({ origin, destination, weight, courier }) => {
   const payload = querystring.stringify({ origin, destination, weight, courier });
 
   const response = await axios.post(`${RAJAONGKIR_BASE_URL}/cost`, payload, {

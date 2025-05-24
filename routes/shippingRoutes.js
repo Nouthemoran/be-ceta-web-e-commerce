@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { getProvinces, getCities, calculateShippingCost } = require('../controllers/shippingController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+
+// Mengimpor controller dan middleware dengan import ES6
+import { getProvinces, getCities, calculateShippingCost } from '../controllers/shippingController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 // Get all provinces
 router.get('/provinces', getProvinces);
@@ -12,4 +14,4 @@ router.get('/cities/:provinceId', getCities);
 // Get shipping cost
 router.post('/cost', authMiddleware, calculateShippingCost);
 
-module.exports = router;
+export default router;

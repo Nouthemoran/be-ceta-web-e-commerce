@@ -1,5 +1,5 @@
-const { Product, Category } = require('../models/Index');
-const { generateCustomId } = require('../utils/generateCustomId');
+import { Product, Category } from '../models/Index.js';
+import { generateCustomId } from '../utils/generateCustomId.js';
 
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
@@ -96,7 +96,7 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createProduct,
   getProducts,
   getProductById,

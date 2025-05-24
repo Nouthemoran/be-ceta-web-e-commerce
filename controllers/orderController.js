@@ -1,6 +1,6 @@
-const { Order, OrderItem, Cart, CartItem, ProductVariant } = require('../models/Index');
+import { Order, OrderItem, Cart, CartItem, ProductVariant } from '../models/Index';
 
-const { generateOrderId } = require('../utils/generateCustomId');
+import { generateOrderId } from '../utils/generateCustomId';
 
 // 1️⃣ Checkout dari Cart (Semua Barang di Keranjang)
 const checkoutFromCart = async (req, res) => {
@@ -150,7 +150,7 @@ const getOrders = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   checkoutFromCart,
   buyNow,
   getOrders,

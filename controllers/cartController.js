@@ -1,4 +1,4 @@
-const { Cart, ProductVariant, CartItem   } = require('../models/Index');
+import { Cart, ProductVariant, CartItem } from '../models/Index.js';
 
 // GET CART ITEMS (dengan detail variant)
 const getCartItems = async (req, res) => {
@@ -111,7 +111,7 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getCartItems,
   addCartItem,
   updateCartItem,

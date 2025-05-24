@@ -1,6 +1,6 @@
-const { Cart, CartItem, ProductVariant} = require('../models/Index');
+import { Cart, CartItem, ProductVariant } from '../models/Index';
 // Pastikan objek snap telah diinisialisasi dari midtrans-client atau sesuai implementasi kamu
-const snap = require('../utils/snap'); 
+import { createTransaction } from '../utils/snap'; 
 // Contoh: const snap = new midtransClient.Snap({ isProduction: false, serverKey: process.env.MIDTRANS_SERVER_KEY });
 
 const createPayment = async (req, res) => {
@@ -78,7 +78,7 @@ const createPayment = async (req, res) => {
       },
     };
 
-    const transaction = await snap.createTransaction(parameter);
+    const transaction = await createTransaction(parameter);
 
     res.status(200).json({
       token: transaction.token,
@@ -89,4 +89,4 @@ const createPayment = async (req, res) => {
   }
 };
 
-module.exports = { createPayment };
+export default { createPayment };

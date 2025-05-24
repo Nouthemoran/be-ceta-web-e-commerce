@@ -24,5 +24,6 @@
     "mysql2": "^3.12.0",
     "sequelize": "^6.37.5",
     "swagger-ui-express": "^5.0.1"
-  }
+  },
+  "type": "module"
 }

@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {createReview, getProductReviews, deleteReview} = require('../controllers/reviewController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+
+// Mengimpor controller dan middleware dengan import ES6
+import { createReview, getProductReviews, deleteReview } from '../controllers/reviewController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 // Tambah review
 router.post('/', authMiddleware, createReview);
@@ -12,4 +14,4 @@ router.get('/product/:productId', authMiddleware, getProductReviews);
 // Hapus review
 router.delete('/:reviewId', authMiddleware, deleteReview);
 
-module.exports = router;
+export default router;

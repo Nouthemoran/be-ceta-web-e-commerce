@@ -1,6 +1,6 @@
-const { Model, DataTypes } = require('sequelize');
+import { Model, DataTypes } from 'sequelize';
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   class ShippingOption extends Model {}
 
   ShippingOption.init(

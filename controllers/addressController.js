@@ -1,4 +1,4 @@
-const { Address } = require('../models/Index');
+import { Address } from '../models/Index';
 
 // Tambah alamat baru
 const createAddress = async (req, res) => {
@@ -103,7 +103,7 @@ const updateAddress = async (req, res) => {
   };
   
 
-module.exports = {
+export default {
   createAddress,
   getUserAddresses,
   deleteAddress,

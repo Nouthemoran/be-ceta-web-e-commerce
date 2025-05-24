@@ -1,4 +1,4 @@
-const { Wishlist, Product } = require('../models/Index');
+import { Wishlist, Product } from '../models/Index';
 
 const getAllWishlist = async (req, res) => {
   try {
@@ -91,7 +91,7 @@ const removeFromWishlist = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getAllWishlist,
   addToWishlist,
   removeFromWishlist,

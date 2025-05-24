@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { googleAuthHandler } = require('../controllers/authController');
+
+// Mengimpor controller dengan import ES6
+import { googleAuthHandler } from '../controllers/authController.js';
 
 router.post('/google', googleAuthHandler);
 
-module.exports = router;
+export default router;

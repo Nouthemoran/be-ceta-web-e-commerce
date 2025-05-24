@@ -1,21 +1,21 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/db.js';
 
-// Import model-model yang sudah kamu buat
-const User = require('./User')(sequelize, DataTypes);
-const Category = require('./Category')(sequelize, DataTypes);
-const Product = require('./Product')(sequelize, DataTypes);
-const ProductVariant = require('./ProductVariant')(sequelize, DataTypes);
-const Cart = require('./Cart')(sequelize, DataTypes);
-const CartItem = require('./CartItem')(sequelize, DataTypes);
-const Order = require('./Order')(sequelize, DataTypes);
-const OrderItem = require('./OrderItem')(sequelize, DataTypes);
-const Payment = require('./Payment')(sequelize, DataTypes);
-const Wishlist = require('./Wishlist')(sequelize, DataTypes); // ✅ Tambahan
-const Review = require('./Review')(sequelize, DataTypes);
-const Address = require('./Address')(sequelize, DataTypes);
-const Coupon = require('./Coupon')(sequelize, DataTypes);
-const ShippingOptions = require('./ShippingOptions')(sequelize, DataTypes);
+// Import model-model yang sudah kamu buat dengan import ES6
+import User from './User.js';
+import Category from './Category.js';
+import Product from './Product.js';
+import ProductVariant from './ProductVariant.js';
+import Cart from './Cart.js';
+import CartItem from './CartItem.js';
+import Order from './Order.js';
+import OrderItem from './OrderItem.js';
+import Payment from './Payment.js';
+import Wishlist from './Wishlist.js';
+import Review from './Review.js';
+import Address from './Address.js';
+import Coupon from './Coupon.js';
+import ShippingOptions from './ShippingOptions.js';
 
 // Atur relasi antar model
 // Category ↔ Product
@@ -54,7 +54,7 @@ OrderItem.belongsTo(ProductVariant, { foreignKey: 'variantId', as: 'variant' });
 Order.hasOne(Payment, { foreignKey: 'orderId' });
 Payment.belongsTo(Order, { foreignKey: 'orderId' });
 
-// ✅ User ↔ Wishlist ↔ Product
+// User ↔ Wishlist ↔ Product
 User.hasMany(Wishlist, { foreignKey: 'userId' });
 Wishlist.belongsTo(User, { foreignKey: 'userId' });
 
@@ -82,6 +82,7 @@ Order.hasOne(ShippingOptions, { foreignKey: 'orderId' });
 ShippingOptions.belongsTo(Order, { foreignKey: 'orderId' });
 
 const db = {
+  DataTypes,
   sequelize,
   User,
   Category,
@@ -92,11 +93,11 @@ const db = {
   Order,
   OrderItem,
   Payment,
-  Wishlist, // ✅ Tambahan
+  Wishlist,
   Review,
-  Address, // ← Tambahkan ini
-  Coupon, // ← Tambahan
-  ShippingOptions, // ← Tambahan
+  Address,
+  Coupon,
+  ShippingOptions,
 };
 
-module.exports = db;
+export default db;

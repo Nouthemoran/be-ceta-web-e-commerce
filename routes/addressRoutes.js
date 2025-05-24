@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { createAddress, getUserAddresses, deleteAddress, updateAddress } = require('../controllers/addressController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+
+// Mengimpor controller dan middleware dengan import ES6
+import { createAddress, getUserAddresses, deleteAddress, updateAddress } from '../controllers/addressController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 // Buat alamat baru
 router.post('/', authMiddleware, createAddress);
@@ -15,4 +17,4 @@ router.put('/:addressId', authMiddleware, updateAddress);
 // Hapus alamat tertentu milik user yang login
 router.delete('/:addressId', authMiddleware, deleteAddress);
 
-module.exports = router;
+export default router;

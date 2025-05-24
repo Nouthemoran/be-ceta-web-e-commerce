@@ -1,4 +1,4 @@
-const { Coupon } = require('../models/Index');
+import { Coupon } from '../models/Index';
 
 // CREATE COUPON
 const createCoupon = async (req, res) => {
@@ -53,7 +53,7 @@ const validateCoupon = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createCoupon,
   getCoupons,
   validateCoupon,

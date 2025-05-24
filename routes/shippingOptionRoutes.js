@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const shippingOptionController = require('../controllers/shippingOptionController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+
+// Mengimpor controller dan middleware dengan import ES6
+import shippingOptionController from '../controllers/shippingOptionController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 // Simpan shipping option
 router.post('/select', authMiddleware, shippingOptionController.createShippingOption);
@@ -9,4 +11,4 @@ router.post('/select', authMiddleware, shippingOptionController.createShippingOp
 // Ambil shipping option dari order
 router.get('/:orderId', authMiddleware, shippingOptionController.getShippingOptionByOrder);
 
-module.exports = router;
+export default router;

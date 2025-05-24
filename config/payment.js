@@ -1,9 +1,9 @@
-const midtransClient = require('midtrans-client');
+import { Snap } from 'midtrans-client';
 
-const snap = new midtransClient.Snap({
+const snap = new Snap({
   isProduction: false, // false = Sandbox, true = Production
   serverKey: process.env.MIDTRANS_SERVER_KEY,
   clientKey: process.env.MIDTRANS_CLIENT_KEY,
 });
 
-module.exports = snap;
+export default snap;

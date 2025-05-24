@@ -1,10 +1,10 @@
-const { OAuth2Client } = require('google-auth-library');
-const jwt = require('jsonwebtoken');
-const User = require('../models/Index'); // pastikan sesuai path model User kamu
+import { OAuth2Client } from 'google-auth-library';
+import { sign } from 'jsonwebtoken';
+import { findOne, create } from '../models/Index'; // pastikan sesuai path model User kamu
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-exports.googleAuthHandler = async (req, res) => {
+export async function googleAuthHandler(req, res) {
   try {
     const { token } = req.body;
     if (!token) return res.status(400).json({ message: 'Token is required' });
@@ -19,10 +19,10 @@ exports.googleAuthHandler = async (req, res) => {
     const { email, name, picture } = payload;
 
     // Cari user di database
-    let user = await User.findOne({ email });
+    let user = await findOne({ email });
     if (!user) {
       // Buat user baru kalau belum ada
-      user = await User.create({
+      user = await create({
         email,
         name,
         avatar: picture, // opsional
@@ -31,7 +31,7 @@ exports.googleAuthHandler = async (req, res) => {
     }
 
     // Generate JWT internal kamu
-    const jwtToken = jwt.sign(
+    const jwtToken = sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
@@ -43,4 +43,4 @@ exports.googleAuthHandler = async (req, res) => {
     console.error(error);
     res.status(401).json({ message: 'Invalid Google token' });
   }
-};
+}

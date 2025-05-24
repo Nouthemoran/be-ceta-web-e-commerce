@@ -1,5 +1,5 @@
-const { User } = require('../models/Index');
-const { generateToken } = require('../utils/generateToken');
+import { User } from '../models/Index.js';
+import { generateToken } from '../utils/generateToken.js';
 
 // REGISTER
 const registerUser = async (req, res) => {
@@ -56,4 +56,4 @@ const logoutUser = async (req, res) => {
 };
 
 
-module.exports = { registerUser, loginUser, logoutUser };
+export default { registerUser, loginUser, logoutUser };

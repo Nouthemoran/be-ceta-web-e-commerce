@@ -1,4 +1,4 @@
-const { Category } = require('../models/Index');
+import { Category } from '../models/Index';
 
 const categoryController = {
   // Get all categories
@@ -78,4 +78,4 @@ const categoryController = {
   }
 };
 
-module.exports = categoryController;
+export default categoryController;

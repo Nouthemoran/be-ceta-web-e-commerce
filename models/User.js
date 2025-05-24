@@ -1,15 +1,15 @@
-const { Model } = require('sequelize');
-const bcrypt = require('bcrypt');
+import { Model } from 'sequelize';
+import { genSalt, hash, compare } from 'bcrypt';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   class User extends Model {
     async hashPassword() {
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
+      const salt = await genSalt(10);
+      this.password = await hash(this.password, salt);
     }
 
     async comparePassword(password) {
-      return await bcrypt.compare(password, this.password);
+      return await compare(password, this.password);
     }
   }
 

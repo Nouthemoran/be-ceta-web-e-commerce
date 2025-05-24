@@ -1,4 +1,4 @@
-const { ProductVariant, Product } = require('../models/Index');
+import { ProductVariant, Product } from '../models/Index';
 
 // CREATE PRODUCT VARIANT
 const createProductVariant = async (req, res) => {
@@ -106,7 +106,7 @@ const deleteProductVariant = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createProductVariant,
   getProductVariants,
   getProductVariantById,

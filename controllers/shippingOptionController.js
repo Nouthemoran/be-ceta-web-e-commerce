@@ -1,4 +1,4 @@
-const { ShippingOption, Order } = require('../models/Index');
+import { ShippingOption, Order } from '../models/Index';
 
 // Menyimpan shipping option ke dalam order
 async function createShippingOption(req, res) {
@@ -49,7 +49,7 @@ async function getShippingOptionByOrder(req, res) {
   }
 }
 
-module.exports = {
+export default {
   createShippingOption,
   getShippingOptionByOrder,
 };

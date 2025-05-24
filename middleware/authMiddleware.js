@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const { User }  = require('../models/Index');
+import { verify } from 'jsonwebtoken';
+import { User } from '../models/Index.js';
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'Akses ditolak, token tidak ada' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
 
     if (!user) {
@@ -23,4 +23,4 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware };
+export default { authMiddleware };

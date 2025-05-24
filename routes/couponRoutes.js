@@ -1,15 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const couponController = require('../controllers/couponController');
-const { isAdmin } = require('../middleware/authMiddleware');
 
-// Hanya admin yang bisa buat kupon
-router.post('/', isAdmin, couponController.createCoupon);
+// Mengimpor controller dan middleware dengan import ES6
+import { authMiddleware } from '../middleware/authMiddleware.js';
+import { checkoutFromCart, buyNow, getOrders } from '../controllers/orderController.js';
 
-// Semua user bisa lihat kupon (misal saat checkout)
-router.get('/', couponController.getCoupons);
+router.post('/checkout', authMiddleware, checkoutFromCart);
+router.post('/buy-now', authMiddleware, buyNow);
+router.get('/', authMiddleware, getOrders);
 
-// Validasi kupon saat checkout
-router.post('/validate', couponController.validateCoupon);
-
-module.exports = router;
+export default router;

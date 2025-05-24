@@ -1,22 +1,34 @@
-const express = require('express');
-const db = require('./models/Index'); 
+import express from 'express';
+import cors from 'cors';
+import db from './models/Index.js';
 
-const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
-const productVariantRoutes = require('./routes/variantRoutes');
-const wishlistRoutes = require('./routes/wishlistRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const addressRoutes = require('./routes/addressRoutes');
-const shippingOptionRoutes = require('./routes/shippingOptionRoutes');
-const authRoutes = require('./routes/authRoutes');
+// Import routes
+import userRoutes from './routes/userRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import productVariantRoutes from './routes/variantRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
+import addressRoutes from './routes/addressRoutes.js';
+import shippingOptionRoutes from './routes/shippingOptionRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
+const port = process.env.PORT || 3001; // Or your desired port
+
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// main routes
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:3000', // Replace with your frontend URL
+  credentials: true, // Allow cookies and authorization headers
+};
+app.use(cors(corsOptions));
+
+// Route definitions - Centralized for clarity
 app.use('/api/auth', authRoutes);
 app.use('/api/shipping-options', shippingOptionRoutes);
 app.use('/api/address', addressRoutes);
@@ -29,18 +41,25 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/user', userRoutes);
 
-// Cek koneksi DB
-db.sequelize.authenticate()
-  .then(() => {
+// Database synchronization and server start
+async function startServer() {
+  try {
+    await db.sequelize.authenticate();
     console.log('✅ Database Connected!');
-    // Sync semua model ke database
-    return db.sequelize.sync({ alter: false });
-  })
-  .then(() => {
-    console.log('✅ Database Synced!');
-  })
-  .catch((err) => {
-    console.error('❌ Error:', err);
-  });
 
-module.exports = app;
+    // Use { alter: false } in production, and { force: true } in development
+    // to drop tables if they exist
+    await db.sequelize.sync({ alter: false });
+    console.log('✅ Database Synced!');
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (err) {
+    console.error('❌ Error during server startup:', err);
+  }
+}
+
+startServer();
+
+export default app;

@@ -1,10 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { getAllWishlist, addToWishlist, removeFromWishlist } = require('../controllers/wishlistController');
-const { authMiddleware } = require('../middleware/authMiddleware');
+
+// Mengimpor controller dan middleware dengan import ES6
+import { getAllWishlist, addToWishlist, removeFromWishlist } from '../controllers/wishlistController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 router.get('/', authMiddleware, getAllWishlist);
 router.post('/', authMiddleware, addToWishlist);
 router.delete('/:wishlistId', authMiddleware, removeFromWishlist);
 
-module.exports = router;
+export default router;

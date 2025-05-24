@@ -1,4 +1,4 @@
-const { Review, Product, User } = require('../models/Index');
+import { Review, Product, User } from '../models/Index';
 
 // Buat review baru
 const createReview = async (req, res) => {
@@ -74,7 +74,7 @@ const deleteReview = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createReview,
   getProductReviews,
   deleteReview,
